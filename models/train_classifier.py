@@ -11,6 +11,7 @@ nltk.download('stopwords')
 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 
 from sklearn.pipeline import Pipeline
@@ -50,7 +51,7 @@ def load_data(database_filepath):
 
 def tokenize(text):
     """
-    Normalize, tokenize and stemming text string
+    Normalize, lemmatize, and tokenize  text string
 
     Parameters:
         text: a string containing a sentence to be proceesed
@@ -60,19 +61,24 @@ def tokenize(text):
 
     """
     # Convert text to lowercase and remove punctuation
-    text = re.sub(r"[^a-zA-Z0-9]", " ", text)
     text = text.lower()
+    text = re.sub(r"[^a-zA-Z0-9]", " ", text)
 
     # Tokenize words
     tokens = word_tokenize(text)
 
-    # Stem word tokens and remove stop words
-    ps = PorterStemmer()
-    stop_words = stopwords.words("english")
+    #remove stop words
+    text = [t for t in text if t not in stopwords.words("english")]
 
-    stemmed = [ps.stem(word) for word in tokens if word not in stop_words]
+    # Lemmatise word tokens
+    lemmatizer = WordNetLemmatizer()
 
-    return stemmed
+    clean_tokens = []
+    for token in tokens:
+        clean_token = lemmatizer.lemmatize(token).strip()
+        clean_tokens.append(clean_token)
+
+    return clean_tokens
 
 def build_model():
     """

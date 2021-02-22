@@ -57,6 +57,9 @@ def clean_data(df):
     # drop any duplicates in the dataframe
     df.drop_duplicates(inplace = True)
 
+    #remove rows with related = 2 as they are not informative for the model
+    df = df[df['related'] != 2]
+
     return df
 
 
